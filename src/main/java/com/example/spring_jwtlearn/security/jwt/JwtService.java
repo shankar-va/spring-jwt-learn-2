@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -51,7 +49,7 @@ public class JwtService {
 
     public List<SimpleGrantedAuthority> extractAuthorities(String token) {
 
-        List<String> authorities = (List<String>) extractClaim(token, claim -> claim.get("authorities"));
+        List<String> authorities = extractAllClaims(token).get("authorities", List.class);
         return authorities.stream()
                           .map(SimpleGrantedAuthority::new)
                           .toList();
@@ -68,15 +66,14 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
 
-        List<String> authorities = userDetails.getAuthorities()
+        List<String> Authorities = userDetails.getAuthorities()
                                               .stream()
                                               .map(GrantedAuthority::getAuthority)
                                               .toList();
-        Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("authorities", authorities);
+
         return Jwts.builder()
                    .subject(userDetails.getUsername())
-                   .claims(extraClaims)
+                   .claim("authorities", Authorities)
                    .issuedAt(new Date(System.currentTimeMillis()))
                    .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                    .signWith(SECRET_KEY)

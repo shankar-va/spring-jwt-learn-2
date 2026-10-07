@@ -17,7 +17,7 @@ public class Privileges {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     @Column(name = "privilege_name")
     private Privilege privilege = Privilege.READ_PRIVILEGE;

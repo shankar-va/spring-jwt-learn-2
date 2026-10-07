@@ -3,6 +3,7 @@ package com.example.spring_jwtlearn.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Builder
@@ -42,9 +43,9 @@ public class User {
     @Column(name = "is_credentials_non_expired", nullable = false)
     private boolean isCredentialsNonExpired = true;
 
-    @Column(name = "role_info")
+    @Builder.Default
     @JoinTable(name = "role_infos", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Roles> roles;
+    private Set<Roles> roles = new HashSet<>();
 
 }

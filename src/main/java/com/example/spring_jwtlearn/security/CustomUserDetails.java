@@ -8,13 +8,11 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -28,13 +26,15 @@ public class CustomUserDetails implements UserDetails {
 
         Set<SimpleGrantedAuthority> authorities = user.getRoles()
                                                       .stream()
-                                                      .map(role -> new SimpleGrantedAuthority(role.getRole() + ""))
+                                                      .map(role -> new SimpleGrantedAuthority(role.getRole()
+                                                                                                  .name()))
                                                       .collect(Collectors.toSet());
         user.getRoles()
             .stream()
             .flatMap(role -> role.getPrivileges()
                                  .stream())
-            .map(privilege -> new SimpleGrantedAuthority(privilege + ""))
+            .map(privilege -> new SimpleGrantedAuthority(privilege.getPrivilege()
+                                                                  .name()))
             .forEach(authority -> authorities.add(authority));
         return authorities;
     }
